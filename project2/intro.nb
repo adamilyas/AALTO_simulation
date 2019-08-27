@@ -1,0 +1,515 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     22032,        505]
+NotebookOptionsPosition[     21519,        488]
+NotebookOutlinePosition[     21853,        503]
+CellTagsIndexPosition[     21810,        500]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Needs", "[", "\"\<HypothesisTesting`\>\"", "]"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"modSimulator2classPS", "[", 
+   RowBox[{
+   "la1_", ",", "la2_", ",", "mu1_", ",", "mu2_", ",", "iniTrans_", ",", 
+    "simuLen_"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "simTime", ",", "meanqlen", ",", "prevEvTime", ",", "nextArr", ",", 
+      "nextDep", ",", "joblist1", ",", "joblist2", ",", "delsum1", ",", 
+      "delsum2", ",", "nofsamples1", ",", "nofsamples2", ",", "nn1", ",", 
+      "nn2", ",", "depInd", ",", "deptime1", ",", "deptime2", ",", "i", ",", 
+      "latot", ",", "p"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"simTime", "=", "0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"latot", "=", 
+      RowBox[{"la1", "+", "la2"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"nextArr", "=", 
+      RowBox[{"RandomVariate", "[", 
+       RowBox[{"ExponentialDistribution", "[", "latot", "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"nextDep", "=", "Infinity"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"joblist1", "=", 
+      RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"joblist2", "=", 
+      RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"meanqlen", "=", "0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"delsum1", "=", "0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"delsum2", "=", "0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"nofsamples1", "=", "0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"nofsamples2", "=", "0"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"nn1", "=", "0"}], ";", " ", 
+     RowBox[{"(*", " ", 
+      RowBox[{"nof", " ", "flows", " ", "for", " ", "class", " ", "1"}], " ", 
+      "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"nn2", "=", "0"}], ";", " ", 
+     RowBox[{"(*", " ", 
+      RowBox[{"nof", " ", "flows", " ", "for", " ", "class", " ", "2"}], " ", 
+      "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"While", "[", 
+      RowBox[{
+       RowBox[{"simTime", "\[LessEqual]", "simuLen"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"nextArr", "<", "nextDep"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"prevEvTime", "=", "simTime"}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"simTime", "=", "nextArr"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"meanqlen", "+=", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"nn1", "+", "nn2"}], ")"}], "*", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"Min", "[", 
+                 RowBox[{"simTime", ",", "simuLen"}], "]"}], "-", 
+                "prevEvTime"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{"serve", " ", "flows"}], " ", "*)"}], 
+            "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn1", ">", "0"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"i", "=", "1"}], ",", 
+                RowBox[{"i", "\[LessEqual]", 
+                 RowBox[{"Length", "[", "joblist1", "]"}]}], ",", 
+                RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"joblist1", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "=", 
+                 RowBox[{
+                  RowBox[{"joblist1", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"i", ",", "2"}], "]"}], "]"}], "-", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"simTime", "-", "prevEvTime"}], ")"}], "/", 
+                   RowBox[{"(", 
+                    RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}]}], "]"}], 
+              "\[IndentingNewLine]", ",", 
+              RowBox[{"joblist1", "=", 
+               RowBox[{"{", "}"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn2", ">", "0"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"i", "=", "1"}], ",", 
+                RowBox[{"i", "\[LessEqual]", 
+                 RowBox[{"Length", "[", "joblist2", "]"}]}], ",", 
+                RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"joblist2", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "=", 
+                 RowBox[{
+                  RowBox[{"joblist2", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"i", ",", "2"}], "]"}], "]"}], "-", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"simTime", "-", "prevEvTime"}], ")"}], "/", 
+                   RowBox[{"(", 
+                    RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}]}], "]"}], 
+              "\[IndentingNewLine]", ",", 
+              RowBox[{"joblist2", "=", 
+               RowBox[{"{", "}"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{"insert", " ", "new", " ", "arrival"}], " ", "*)"}], 
+            "\[IndentingNewLine]", 
+            RowBox[{"p", " ", "=", " ", 
+             RowBox[{"RandomReal", "[", "]"}]}], ";", "\[IndentingNewLine]", 
+            RowBox[{"Which", "[", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"p", "<", 
+               RowBox[{"la1", "/", 
+                RowBox[{"(", 
+                 RowBox[{"la1", "+", "la2"}], ")"}]}]}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"{", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"joblist1", "=", 
+                 RowBox[{"Append", "[", 
+                  RowBox[{"joblist1", ",", 
+                   RowBox[{"{", 
+                    RowBox[{"simTime", ",", 
+                    RowBox[{"RandomVariate", "[", 
+                    RowBox[{"ExponentialDistribution", "[", "mu1", "]"}], 
+                    "]"}]}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+                RowBox[{"joblist1", "=", 
+                 RowBox[{"Sort", "[", 
+                  RowBox[{"joblist1", ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "<", 
+                    RowBox[{"#2", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "&"}]}], "]"}]}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"nn1", "++"}], ";"}], "\[IndentingNewLine]", "}"}], 
+              ",", "\[IndentingNewLine]", 
+              RowBox[{"p", ">=", 
+               RowBox[{"la1", "/", 
+                RowBox[{"(", 
+                 RowBox[{"la1", "+", "la2"}], ")"}]}]}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"{", "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"joblist2", "=", 
+                 RowBox[{"Append", "[", 
+                  RowBox[{"joblist2", ",", 
+                   RowBox[{"{", 
+                    RowBox[{"simTime", ",", 
+                    RowBox[{"RandomVariate", "[", 
+                    RowBox[{"ExponentialDistribution", "[", "mu2", "]"}], 
+                    "]"}]}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+                RowBox[{"joblist2", "=", 
+                 RowBox[{"Sort", "[", 
+                  RowBox[{"joblist2", ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"#1", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "<", 
+                    RowBox[{"#2", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "&"}]}], "]"}]}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"nn2", "++"}], ";"}], "\[IndentingNewLine]", "}"}]}], 
+             "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{"update", " ", "arrival", " ", "event"}], " ", "*)"}], 
+            "\[IndentingNewLine]", 
+            RowBox[{"nextArr", "=", 
+             RowBox[{"simTime", "+", 
+              RowBox[{"RandomVariate", "[", 
+               RowBox[{"ExponentialDistribution", "[", "latot", "]"}], 
+               "]"}]}]}], ";", "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{
+              RowBox[{"update", " ", "departure", " ", "event"}], ",", " ", 
+              RowBox[{
+              "there", " ", "is", " ", "at", " ", "least", " ", "1", " ", 
+               "flow", " ", "in", " ", "system"}]}], " ", "*)"}], 
+            "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn1", ">", "0"}], ",", 
+              RowBox[{"deptime1", "=", 
+               RowBox[{"simTime", "+", 
+                RowBox[{
+                 RowBox[{"joblist1", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"1", ",", "2"}], "]"}], "]"}], "*", 
+                 RowBox[{"(", 
+                  RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}], ",", 
+              RowBox[{"deptime1", "=", "Infinity"}]}], "]"}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn2", ">", "0"}], ",", 
+              RowBox[{"deptime2", "=", 
+               RowBox[{"simTime", "+", 
+                RowBox[{
+                 RowBox[{"joblist2", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"1", ",", "2"}], "]"}], "]"}], "*", 
+                 RowBox[{"(", 
+                  RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}], ",", 
+              RowBox[{"deptime2", "=", "Infinity"}]}], "]"}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"Which", "[", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"deptime1", " ", "\[Equal]", " ", 
+               RowBox[{"Min", "[", 
+                RowBox[{"deptime1", ",", " ", "deptime2"}], "]"}]}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"nextDep", "=", "deptime1"}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"depInd", "=", "1"}], ";"}], "}"}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"deptime2", " ", "\[Equal]", " ", 
+               RowBox[{"Min", "[", 
+                RowBox[{"deptime1", ",", " ", "deptime2"}], "]"}]}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"nextDep", "=", "deptime2"}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"depInd", "=", "2"}], ";"}], "}"}]}], 
+             "\[IndentingNewLine]", "]"}], ";"}], "\[IndentingNewLine]", 
+           "}"}], ",", "\[IndentingNewLine]", 
+          RowBox[{"{", "\[IndentingNewLine]", 
+           RowBox[{
+            RowBox[{"prevEvTime", "=", "simTime"}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"simTime", "=", "nextDep"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"meanqlen", "+=", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"nn1", "+", "nn2"}], ")"}], "*", 
+              RowBox[{"(", 
+               RowBox[{
+                RowBox[{"Min", "[", 
+                 RowBox[{"simTime", ",", "simuLen"}], "]"}], "-", 
+                "prevEvTime"}], ")"}]}]}], ";", "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{"serve", " ", "flows"}], " ", "*)"}], 
+            "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn1", ">", "0"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"i", "=", "1"}], ",", 
+                RowBox[{"i", "\[LessEqual]", 
+                 RowBox[{"Length", "[", "joblist1", "]"}]}], ",", 
+                RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"joblist1", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "=", 
+                 RowBox[{
+                  RowBox[{"joblist1", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"i", ",", "2"}], "]"}], "]"}], "-", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"simTime", "-", "prevEvTime"}], ")"}], "/", 
+                   RowBox[{"(", 
+                    RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}]}], "]"}], 
+              "\[IndentingNewLine]", ",", 
+              RowBox[{"joblist1", "=", 
+               RowBox[{"{", "}"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn2", ">", "0"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"i", "=", "1"}], ",", 
+                RowBox[{"i", "\[LessEqual]", 
+                 RowBox[{"Length", "[", "joblist2", "]"}]}], ",", 
+                RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"joblist2", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "=", 
+                 RowBox[{
+                  RowBox[{"joblist2", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"i", ",", "2"}], "]"}], "]"}], "-", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"simTime", "-", "prevEvTime"}], ")"}], "/", 
+                   RowBox[{"(", 
+                    RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}]}], "]"}], 
+              "\[IndentingNewLine]", ",", 
+              RowBox[{"joblist2", "=", 
+               RowBox[{"{", "}"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{"collect", " ", "statistics"}], " ", "*)"}], 
+            "\[IndentingNewLine]", 
+            RowBox[{"Which", "[", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"depInd", "\[Equal]", "1"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{"simTime", ">", "iniTrans"}], ",", 
+                  "\[IndentingNewLine]", 
+                  RowBox[{
+                   RowBox[{"delsum1", "+=", 
+                    RowBox[{"(", 
+                    RowBox[{"simTime", "-", 
+                    RowBox[{"joblist1", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ")"}]}], ";", 
+                   "\[IndentingNewLine]", 
+                   RowBox[{"nofsamples1", "++"}], ";"}]}], 
+                 "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+                RowBox[{"joblist1", "=", 
+                 RowBox[{"Delete", "[", 
+                  RowBox[{"joblist1", ",", "1"}], "]"}]}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"nn1", "--"}], ";"}], "}"}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"depInd", "\[Equal]", "2"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"If", "[", 
+                 RowBox[{
+                  RowBox[{"simTime", ">", "iniTrans"}], ",", 
+                  "\[IndentingNewLine]", 
+                  RowBox[{
+                   RowBox[{"delsum2", "+=", 
+                    RowBox[{"(", 
+                    RowBox[{"simTime", "-", 
+                    RowBox[{"joblist2", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"1", ",", "1"}], "]"}], "]"}]}], ")"}]}], ";", 
+                   "\[IndentingNewLine]", 
+                   RowBox[{"nofsamples2", "++"}], ";"}]}], 
+                 "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+                RowBox[{"joblist2", "=", 
+                 RowBox[{"Delete", "[", 
+                  RowBox[{"joblist2", ",", "1"}], "]"}]}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"nn2", "--"}], ";"}], "}"}]}], "\[IndentingNewLine]", 
+             "]"}], ";", "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{
+              RowBox[{"update", " ", "departure", " ", "event"}], ",", " ", 
+              RowBox[{
+              "now", " ", "system", " ", "may", " ", "be", " ", "totally", 
+               " ", "empty"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn1", ">", "0"}], ",", 
+              RowBox[{"deptime1", "=", 
+               RowBox[{"simTime", "+", 
+                RowBox[{
+                 RowBox[{"joblist1", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"1", ",", "2"}], "]"}], "]"}], "*", 
+                 RowBox[{"(", 
+                  RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}], ",", 
+              RowBox[{"deptime1", "=", "Infinity"}]}], "]"}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{"nn2", ">", "0"}], ",", 
+              RowBox[{"deptime2", "=", 
+               RowBox[{"simTime", "+", 
+                RowBox[{
+                 RowBox[{"joblist2", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"1", ",", "2"}], "]"}], "]"}], "*", 
+                 RowBox[{"(", 
+                  RowBox[{"nn1", "+", "nn2"}], ")"}]}]}]}], ",", 
+              RowBox[{"deptime2", "=", "Infinity"}]}], "]"}], ";", 
+            "\[IndentingNewLine]", 
+            RowBox[{"If", "[", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"nn1", "+", "nn2"}], ")"}], ">", "0"}], ",", 
+              "\[IndentingNewLine]", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"deptime1", "<", "deptime2"}], ",", 
+                "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"nextDep", "=", "deptime1"}], ";", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{"depInd", "=", "1"}], ";"}], "\[IndentingNewLine]", 
+                ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"nextDep", "=", "deptime2"}], ";", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{"depInd", "=", "2"}], ";"}]}], "\[IndentingNewLine]",
+                "]"}], ",", "\[IndentingNewLine]", 
+              RowBox[{"nextDep", "=", "Infinity"}]}], "\[IndentingNewLine]", 
+             "]"}]}], "\[IndentingNewLine]", "}"}]}], "\[IndentingNewLine]", 
+         "]"}], ";"}]}], "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{"Print", "[", "joblist1", "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"Print", "[", "joblist2", "]"}], ";"}], "*)"}], 
+      "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"meanqlen", "/", 
+        RowBox[{"(", 
+         RowBox[{"latot", "*", "simuLen"}], ")"}]}], ",", 
+       RowBox[{
+        RowBox[{"(", 
+         RowBox[{"delsum1", "+", "delsum2"}], ")"}], "/", 
+        RowBox[{"(", 
+         RowBox[{"nofsamples1", "+", "nofsamples2"}], ")"}]}], ",", 
+       RowBox[{"delsum1", "/", "nofsamples1"}], ",", 
+       RowBox[{"delsum2", "/", "nofsamples2"}]}], "}"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}]}], "Input",
+ CellChangeTimes->{{3.7518872920087347`*^9, 3.7518872921528263`*^9}, {
+  3.751887343092812*^9, 3.751887346806584*^9}},
+ CellLabel->"In[5]:=",ExpressionUUID->"13ad45b4-32c7-4d17-91a7-a57c55ac54e4"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"la1", " ", "=", " ", "0.4"}], ";", " ", 
+  RowBox[{"la2", " ", "=", " ", "0.15"}], ";", " ", 
+  RowBox[{"mu1", " ", "=", " ", "1"}], ";", " ", 
+  RowBox[{"mu2", " ", "=", " ", "0.5"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"rho", " ", "=", " ", 
+   RowBox[{
+    RowBox[{"la1", "/", "mu1"}], " ", "+", " ", 
+    RowBox[{"la2", "/", "mu2"}]}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"modSimulator2classPS", "[", 
+  RowBox[{
+  "la1", ",", " ", "la2", ",", "mu1", ",", " ", "mu2", ",", " ", "200", ",", 
+   " ", "20000"}], "]"}]}], "Input",
+ CellChangeTimes->{{3.751887359588366*^9, 3.751887430565701*^9}},
+ CellLabel->"In[9]:=",ExpressionUUID->"9699b772-932a-410a-a839-b9a82330f95d"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+  "4.297343411776091`", ",", "4.325524541070229`", ",", "3.3939616340317293`",
+    ",", "6.794041034654104`"}], "}"}]], "Output",
+ CellChangeTimes->{3.751887433097308*^9},
+ CellLabel->"Out[11]=",ExpressionUUID->"0acb3f00-3463-4d1e-9780-310293d6929a"]
+}, Open  ]]
+},
+WindowSize->{1853, 1025},
+WindowMargins->{{0, Automatic}, {0, Automatic}},
+FrontEndVersion->"11.3 for Linux x86 (64-bit) (March 6, 2018)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 19895, 437, 2585, "Input",ExpressionUUID->"13ad45b4-32c7-4d17-91a7-a57c55ac54e4"],
+Cell[CellGroupData[{
+Cell[20478, 461, 732, 16, 78, "Input",ExpressionUUID->"9699b772-932a-410a-a839-b9a82330f95d"],
+Cell[21213, 479, 290, 6, 35, "Output",ExpressionUUID->"0acb3f00-3463-4d1e-9780-310293d6929a"]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
+
